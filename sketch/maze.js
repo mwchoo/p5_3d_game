@@ -222,7 +222,6 @@ function drawMaze() {
   noStroke();
   translate(-11, -11, 0);
   for (let i = 1; i <= HEIGHT * 2 + 3; i++) {
-    console.log(maze[i - 1]);
     for (let j = 1; j <= WIDTH * 2 + 1; j++) {
       if (maze[i - 1][j - 1] === '-') {
         push();
