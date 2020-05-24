@@ -20,10 +20,6 @@ let sounds = {
   'bgm': undefined
 }
 //let keymap;
-
-let font_georgia;
-let cgSplashName;
-
 //let scene_timer;
 let rot = 0;
 
