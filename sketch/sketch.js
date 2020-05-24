@@ -58,7 +58,8 @@ function setup() {
   mrot = 0;
   srot = 0;
 
-  initBuildings();
+  generateMaze();
+  console.log(maze);
   //sounds.bgm.play();
   /*
   createDiv("<div class='info-wrapper'>" +
@@ -98,11 +99,12 @@ function draw() {
   // camera setting
   camera(X, Y, Z, centerX, centerY, centerZ, 0, 1, 0);
 
-
+  /*
   if (!sounds.bgm.isPlaying()) {
     getAudioContext().resume();
     sounds.bgm.play();
   }
+   */
 
   //handleDisplay();
   handleKeyDown();
