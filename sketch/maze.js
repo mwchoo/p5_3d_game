@@ -1,6 +1,6 @@
 /*
  Generate 3D maze using Eller’s algorithm.
- Navigate a route using DFS algorithm.
+ Navigate a route using DFS/BFS algorithm.
  Implemented by Minwoo Choo
 
  1. draw first line
@@ -8,8 +8,8 @@
  3. draw last line
  */
 
-const WIDTH = 10;
-const HEIGHT = 10;
+const WIDTH = 10;  // width of the maze
+const HEIGHT = 10;  // height of the maze
 let hWall = [];
 let vWall = [];
 let cell = [];
@@ -28,7 +28,7 @@ function generateMaze() {
     curLine += '+-';
   }
   curLine += '+';
-  maze.push([curLine]);
+  maze.push(curLine);
 
   // make vertical wall to distribute the first set.
   for (i = 0; i < WIDTH - 1; i++) {
@@ -188,22 +188,64 @@ function draw_outline() {
   maze.push(curLine);
 }
 
+/*
+Navigate a route using DFS / BFS algorithm
+ */
+let stack = [];  // x, y
+let queue = [];  // x, y, from_x, from_y
+let visited_dfs = [];
+let visited_bfs = [];
+let DFSflag = false;
+let BFSflag = false;
+
+// ToDo. Insert DFS / BFS function here
+
 function drawMaze() {
   push();
-  scale(20);
+  scale(15);
   translate(0, 0, 0);
 
-  randomSeed(0);
   //lights();
   directionalLight(1, 0, 0, 1, 0, 0);
   rotateX(radians(90));
-  fill(0.1);
+  //fill(0.1);
 
   push();
   noStroke();
   specularMaterial(50, 50, 50);
   shininess(20);
-  plane(1000, 1000); // draw ground
+  plane(30, 30); // draw ground
+  pop();
+
+  /* draw walls */
+  push();
+  noStroke();
+  translate(-11, -11, 0);
+  for (let i = 1; i <= HEIGHT * 2 + 3; i++) {
+    console.log(maze[i - 1]);
+    for (let j = 1; j <= WIDTH * 2 + 1; j++) {
+      if (maze[i - 1][j - 1] === '-') {
+        push();
+        translate(j, i, 0.5);
+        box(2, 1, 1);
+        pop();
+        line(j + 1, i, j - 1, i);
+      } else if (maze[i - 1][j - 1] === '|') {
+        if (i === 2 && j === 1 ||  // entrance
+          i === HEIGHT * 2 + 2 && j === WIDTH * 2 + 1) continue;
+        push();
+        translate(j, i, 0.5);
+        box(1, 2, 1);
+        pop();
+        line(j, i - 1, j ,i + 1);
+      } else if (maze[i - 1][j - 1] === '+') {
+        push();
+        translate(j, i, 0.5);
+        box(1, 1, 1);
+        pop();
+      }
+    }
+  }
   pop();
 
   pop();
