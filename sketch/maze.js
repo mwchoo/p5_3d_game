@@ -90,7 +90,6 @@ function vertical_print() {
 
   for (let i = 0; i < WIDTH - 1; i++) {
     curLine += ' ';
-    console.log(vWall[i]);
     if (vWall[i] === 1) {
       curLine += '|';
     } else {
