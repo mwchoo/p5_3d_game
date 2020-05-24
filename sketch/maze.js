@@ -214,12 +214,14 @@ function drawMaze() {
   noStroke();
   specularMaterial(50, 50, 50);
   shininess(20);
+  texture(textures.grass);
   plane(30, 30); // draw ground
   pop();
 
   /* draw walls */
   push();
   noStroke();
+  texture(textures.maze);
   translate(-11, -11, 0);
   for (let i = 1; i <= HEIGHT * 2 + 3; i++) {
     for (let j = 1; j <= WIDTH * 2 + 1; j++) {
@@ -230,8 +232,16 @@ function drawMaze() {
         pop();
         line(j + 1, i, j - 1, i);
       } else if (maze[i - 1][j - 1] === '|') {
-        if (i === 2 && j === 1 ||  // entrance
-          i === HEIGHT * 2 + 2 && j === WIDTH * 2 + 1) continue;
+        if (i === 2 && j === 1) continue;  // entrance
+        if (i === HEIGHT * 2 + 2 && j === WIDTH * 2 + 1) {
+          // destination
+          push();
+          translate(1, 2, 5);
+          fill(255, 0, 0);  // ToDo. apply exit gate texture
+          box(1, 1, 1);
+          pop();
+          continue;
+        }
         push();
         translate(j, i, 0.5);
         box(1, 2, 1);

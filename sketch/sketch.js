@@ -19,6 +19,10 @@ let pov_mode = 0;
 let sounds = {
   'bgm': undefined
 }
+let textures = {
+  'grass': undefined,
+  'maze': undefined
+}
 //let keymap;
 //let scene_timer;
 let rot = 0;
@@ -42,6 +46,8 @@ document.onselectstart = function () {
 
 function preload() {
   //sounds.bgm = loadSound('assets/bgm.mp3');
+  textures.grass = loadImage('assets/grass_texture.jpg');
+  textures.maze = loadImage('assets/leaves_texture.jpg');
 }
 
 function setup() {
