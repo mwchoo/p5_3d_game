@@ -17,19 +17,28 @@ P Key: screen shot
 let scene = 0;
 let pov_mode = 0;
 let sounds = {
-  'bgm': undefined
+  bgm: undefined
 }
 let textures = {
-  'grass': undefined,
-  'maze': undefined
+  grass: undefined,
+  maze: undefined,
+  sky: undefined,
+  human: {
+    face: undefined,
+    head: undefined,
+    body: undefined,
+    arm: undefined,
+    leg: undefined
+  }
 }
+let human;
 //let keymap;
 //let scene_timer;
 let rot = 0;
 
 let X = -160;  // 0;
-let Y = -160;  // 0;
-let Z = 550;  //1700;
+let Y = -600;  // 0;
+let Z = 520;  //1700;
 let centerX = 0;
 let centerY = -100;
 let centerZ = 0;
@@ -45,9 +54,15 @@ document.onselectstart = function () {
 };
 
 function preload() {
-  //sounds.bgm = loadSound('assets/bgm.mp3');
+  sounds.bgm = loadSound('assets/bgm.mp3');
   textures.grass = loadImage('assets/grass_texture.jpg');
   textures.maze = loadImage('assets/leaves_texture.jpg');
+  textures.sky = loadImage('assets/sky_texture.jpg');
+  textures.human.face = loadImage('assets/face.png');
+  textures.human.head = loadImage('assets/head.png');
+  textures.human.body = loadImage('assets/body.png');
+  textures.human.arm = loadImage('assets/arm.png');
+  textures.human.leg = loadImage('assets/leg.png');
 }
 
 function setup() {
@@ -67,6 +82,8 @@ function setup() {
   generateMaze();
   console.log(maze);
   DFS();
+
+  human = new Human();
   //sounds.bgm.play();
   /*
   createDiv("<div class='info-wrapper'>" +
@@ -107,7 +124,7 @@ function draw() {
   camera(X, Y, Z, centerX, centerY, centerZ, 0, 1, 0);
 
   drawMaze();
-  drawDFSRoute();
+  //drawDFSRoute();
 
   /*
   if (!sounds.bgm.isPlaying()) {
@@ -157,14 +174,14 @@ function handleKeyDown() {
   if (keyIsDown(UP_ARROW)) {
     // W: go forward
     Z -= 10;
-    Y = cos(Z / 50) * 60 - 100;  // walk effect
+    Y = cos(Z / 50) * 60 - 100 - 200;  // walk effect
     centerX = 0;
     centerY = -100;
     centerZ = 0;
   } else if (keyIsDown(DOWN_ARROW)) {
     // S: go backward
     Z += 10;
-    Y = cos(Z / 50) * 60 - 100;  // walk effect
+    Y = cos(Z / 50) * 60 - 100 - 200;  // walk effect
     centerX = 0;
     centerY = -100;
     centerZ = 0;
