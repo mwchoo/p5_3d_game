@@ -43,6 +43,12 @@ class Human {  // Implemented by Minwoo Choo
     texture(textures.human.head);
     plane(1, 1);
     pop();
+
+    push();
+    translate(0, 0, 5);
+    fill(0, 0, 255);
+    box(1, 1, 1);
+    pop();
   }
 
   drawBody() {
