@@ -1,8 +1,15 @@
+let humanDropped = false;
+
 class Human {  // Implemented by Minwoo Choo
   constructor() {
     this.walk = false;
     this.rot = 0;
     this.direction = 'backward';
+    this.pos = {
+      x: 0,
+      y: 0,
+      z: 0
+    }
   }
 
   drawHead() {
@@ -107,8 +114,9 @@ class Human {  // Implemented by Minwoo Choo
 
   display() {
     push();
+    scale(0.5);
     noStroke();
-    translate(0, 0, 10);
+    translate(this.pos.x, this.pos.y, this.pos.z);
 
     if (this.direction === 'forward') {
       rotateZ(PI);
@@ -125,5 +133,37 @@ class Human {  // Implemented by Minwoo Choo
     this.drawLegs();
 
     pop();
+  }
+}
+
+function dropTheHuman() {
+  if (!humanDropped) {
+    // initialize drop position
+    human.pos.x = 24;
+    human.pos.z = 25;
+    human.walk = true;
+    human.direction = 'backward';
+    humanDropped = true;
+  }
+
+  if (human.pos.z > 2) {
+    human.pos.z -= 0.2;
+  } else {
+    scene = 1;
+  }
+}
+
+function walkToEntrance() {
+  if (human.pos.y < 22) {
+    human.direction = 'left';
+    human.pos.y += 0.2;
+  } else {
+    if (human.pos.x > 18) {
+      human.direction = 'forward';
+      human.pos.x -= 0.2;
+    } else {
+      human.walk = false;
+      scene = 2;
+    }
   }
 }

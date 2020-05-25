@@ -46,7 +46,9 @@ let h = 20;
 
 let spotPos, spotDir, modelPos;
 let mrot, srot;
-let isPlayed = false;
+
+let gameStart = false;
+let isCleared = false;
 
 document.onselectstart = function () {
   // prevent mouse drag or text/element selection
@@ -81,16 +83,14 @@ function setup() {
 
   generateMaze();
   console.log(maze);
-  DFS();
+  //DFS();
 
   human = new Human();
   //sounds.bgm.play();
   /*
   createDiv("<div class='info-wrapper'>" +
     "<h2 id='pov-info'>Default POV (CAM 0)</h2>" +
-    "<h3 id='drone-pos'>Drone POS: (0, 0, 0)</h3>" +
-    "<h3 id='drone-speed'>Propeller Speed: (0, 0, 0, 0)</h3>" +
-    "<h3 id='altitude'>Altitude: 0 ft</h3>" +
+    "<h3 id='human-pos'>Human POS: (0, 0, 0)</h3>" +
     "<h3 id='cam-pos'>CAM POS: (0, 0, 0), (0, 0, 0)</h3>" +
     "</div>"
   );
@@ -102,12 +102,6 @@ function setup() {
 
 function draw() {
   background(0);
-
-  // scene control
-  if (scene === 0) {
-    // drawSplash();
-    // return;
-  }
 
   // light setting
   lights();
@@ -123,8 +117,19 @@ function draw() {
   // camera setting
   camera(X, Y, Z, centerX, centerY, centerZ, 0, 1, 0);
 
+  // scene control
+  if (scene === 0) {
+    // drop the human
+    dropTheHuman();
+  } else if (scene === 1) {
+    // walks into the entrance
+    walkToEntrance();
+  } else if (scene === 2) {
+    // close the entrance
+    closeEntrance();
+  }
+
   drawMaze();
-  //drawDFSRoute();
 
   /*
   if (!sounds.bgm.isPlaying()) {
@@ -151,25 +156,18 @@ function handlePov() {
 
 function handleDisplay() {
   const pov_info = document.getElementById('pov-info');
-  const drone_pos = document.getElementById('drone-pos');
-  const drone_speed = document.getElementById('drone-speed');
-  const altitude = document.getElementById('altitude');
+  const human_pos = document.getElementById('drone-pos');
   const cam_pos = document.getElementById('cam-pos');
-  const {x, y, z} = drone;
-  const {front_left, front_right, rear_left, rear_right} = drone.propeller;
+  const {x, y, z} = human.pos;
   pov_info.innerText = pov_mode === 0 ? 'Default POV (CAM 0)' : 'Drone POV (CAM 1)';
-  drone_pos.innerText = 'Drone Pos: (' + parseInt(x) + ', ' + parseInt(y) + ', ' + parseInt(z) + ')';
-  drone_speed.innerText = 'Propeller Speed: ' + front_left.rot_speed.toFixed(3) + ', '
-    + front_right.rot_speed.toFixed(3) + ', ' + rear_left.rot_speed.toFixed(3) + ', '
-    + rear_right.rot_speed.toFixed(3) + ')';
-  altitude.innerText = 'Altitude: ' + parseInt(y) * -1 + ' ft';
+  human_pos.innerText = 'Human Pos: (' + parseInt(x) + ', ' + parseInt(y) + ', ' + parseInt(z) + ')';
   cam_pos.innerText = 'CAM POS: (' + parseInt(X) + ', ' + parseInt(Y) + ', ' + parseInt(Z) + ')'
     + ' (' + parseInt(centerX) + ', ' + parseInt(centerY) + ', ' + parseInt(centerZ) + ')';
 }
 
 function handleKeyDown() {
   // handle rot speed of propeller to control altitude
-
+  if (!gameStart) return;
 
   if (keyIsDown(UP_ARROW)) {
     // W: go forward
@@ -215,7 +213,7 @@ function handleKeyDown() {
 }
 
 function keyPressed() {
-  if (keyCode === UP_ARROW || keyCode === DOWN_ARROW || keyCode === LEFT_ARROW || keyCode === RIGHT_ARROW) {
+  if (gameStart && keyCode === UP_ARROW || keyCode === DOWN_ARROW || keyCode === LEFT_ARROW || keyCode === RIGHT_ARROW) {
     human.walk = true;
     /*if (!sounds.walk.isPlaying()) {
       sounds.walk.play();

@@ -16,6 +16,7 @@ let cell = [];
 let set_id = 0;
 let maze = [];
 let maze_height = 3;
+let entrance_height = 0;
 
 function generateMaze() {
   let prevWall = -1;
@@ -389,7 +390,7 @@ function drawMaze() {
   scale(35);
   translate(-5, 0, 0);
   drawWalls();
-  drawDFSRoute();
+  //drawDFSRoute();
   human.display();
   pop();
 
@@ -408,23 +409,25 @@ function drawWalls() {
         translate(j, i, 1); // 0.5);
         box(2, 1, maze_height);
         pop();
-        //line(j + 1, i, j - 1, i);
       } else if (maze[i - 1][j - 1] === '|') {
-        if (i === 2 && j === 1) continue;  // entrance
+        if (i === 2 && j === 1) continue;  // destination
         if (i === HEIGHT * 2 + 2 && j === WIDTH * 2 + 1) {
-          // destination
+          // entrance
           push();
           translate(1, 2, 5);
           fill(255, 0, 0);  // ToDo. apply exit gate texture
           box(1, 1, 1);
           pop();
-          continue;
+          if (scene === 0 || scene === 1) continue;
         }
         push();
         translate(j, i, 1); // 0.5);
-        box(1, 2, maze_height);
+        if (i === HEIGHT * 2 + 2 && j === WIDTH * 2 + 1 && scene === 2) {
+          box(1, 2, entrance_height);
+        } else {
+          box(1, 2, maze_height);
+        }
         pop();
-        //line(j, i - 1, j, i + 1);
       } else if (maze[i - 1][j - 1] === '+') {
         push();
         translate(j, i, 1); // 0.5);
@@ -447,12 +450,10 @@ function drawDFSRoute() {
         if (visited_dfs[i][j - 1] && visited_dfs[i - 1][j - 1]) {
           stroke(150, 150, 150);
           line(j, i, j, i + 1);
-          console.log("!!");
         }
         if (visited_dfs[i - 1][j] && visited_dfs[i - 1][j - 1]) {
           stroke(150, 150, 150);
           line(j, i, j + 1, i);
-          console.log("@@");
         }
       }
     }
@@ -460,14 +461,21 @@ function drawDFSRoute() {
     for (j = 2; j < WIDTH * 2 + 1; j++) {
       stroke(150, 150, 150);
       line(j, HEIGHT * 2 + 3, j + 1, HEIGHT * 2 + 3);
-      console.log("##");
     }
 
     for (i = 0; i < stack.length - 1; i++) {
       stroke(30, 30, 30);
       line(stack[i].x + 1, stack[i].y + 1, stack[i + 1].x + 1, stack[i + 1].y + 1);
-      console.log("$$");
     }
   }
   pop();
+}
+
+function closeEntrance() {
+  if (entrance_height < maze_height) {
+    entrance_height += 0.1;
+  } else {
+    scene = 3;
+    gameStart = true;
+  }
 }
