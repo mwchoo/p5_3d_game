@@ -15,6 +15,7 @@ let vWall = [];
 let cell = [];
 let set_id = 0;
 let maze = [];
+let maze_height = 2;
 
 function generateMaze() {
   let prevWall = -1;
@@ -193,8 +194,9 @@ Navigate a route using DFS / BFS algorithm
  */
 let stack = [];  // x, y
 let queue = [];  // x, y, from_x, from_y
-let visited_dfs = []; //Array.from(Array(HEIGHT), () => Array());
-let visited_bfs = []; //Array.from(Array(HEIGHT), () => Array());
+let visited_dfs = Array.from(Array(HEIGHT * 2 + 3), () => Array());
+let visited_bfs = Array.from(Array(HEIGHT * 2 + 3), () => Array());
+console.log(visited_dfs);
 let DFSflag = false;
 let BFSflag = false;
 let stacknum = 0;
@@ -210,9 +212,9 @@ function DFS() {
   let y = 1;
   let i, j;
 
-  for (i = 0; i < HEIGHT; i++) {
-    for (j = 0; j < WIDTH; j++) {
-      visited_dfs[i] = false;
+  for (i = 0; i < HEIGHT * 2 + 3; i++) {
+    for (j = 0; j < WIDTH * 2 + 1; j++) {
+      visited_dfs[i][j] = false;
     }
   }
 
@@ -233,6 +235,8 @@ function DFS() {
     }
 
     if (y < HEIGHT * 2 + 2) {
+      console.log("!!", x, visited_dfs[y + 1][x], maze[y + 1][x]);
+      console.log(maze[y + 1], x);
       if (visited_dfs[y + 1][x] === false && maze[y + 1][x] === ' ') {
         stack[stacknum] = {x: x, y: y};
         stacknum++;
@@ -253,8 +257,8 @@ function DFS() {
         continue;
       }
     }
-
     if (y > 1) {
+
       if (visited_dfs[y - 1][x] === false && maze[y - 1][x] === ' ') {
         stack[stacknum] = {x: x, y: y};
         stacknum++;
@@ -264,8 +268,8 @@ function DFS() {
         continue;
       }
     }
-
     if (x > 1) {
+
       if (visited_dfs[y][x - 1] === false && maze[y][x - 1] === ' ') {
         stack[stacknum] = {x: x, y: y};
         stacknum++;
@@ -275,11 +279,10 @@ function DFS() {
         continue;
       }
     }
-
     if (block === 0) {
-      stacknum--;
+      if (stacknum > 0) stacknum--;
+      else break;
       console.log(stacknum);
-      console.log(stack);
       x = stack[stacknum].x;
       y = stack[stacknum].y;
     }
@@ -357,7 +360,7 @@ function BFS() {
 function drawMaze() {
   push();
   scale(15);
-  translate(0, 0, 0);
+  rotateY(-HALF_PI);
 
   //lights();
   directionalLight(1, 0, 0, 1, 0, 0);
@@ -369,7 +372,9 @@ function drawMaze() {
   specularMaterial(50, 50, 50);
   shininess(20);
   texture(textures.grass);
-  plane(30, 30); // draw ground
+  ellipse(0, 0, 100, 100);
+  sphere(50);
+  //plane(30, 30); // draw ground
   pop();
 
   drawWalls();
@@ -387,10 +392,10 @@ function drawWalls() {
     for (let j = 1; j <= WIDTH * 2 + 1; j++) {
       if (maze[i - 1][j - 1] === '-') {
         push();
-        translate(j, i, 0.5);
-        box(2, 1, 1);
+        translate(j, i, 1); // 0.5);
+        box(2, 1, maze_height);
         pop();
-        line(j + 1, i, j - 1, i);
+        //line(j + 1, i, j - 1, i);
       } else if (maze[i - 1][j - 1] === '|') {
         if (i === 2 && j === 1) continue;  // entrance
         if (i === HEIGHT * 2 + 2 && j === WIDTH * 2 + 1) {
@@ -403,14 +408,14 @@ function drawWalls() {
           continue;
         }
         push();
-        translate(j, i, 0.5);
-        box(1, 2, 1);
+        translate(j, i, 1); // 0.5);
+        box(1, 2, maze_height);
         pop();
-        line(j, i - 1, j, i + 1);
+        //line(j, i - 1, j, i + 1);
       } else if (maze[i - 1][j - 1] === '+') {
         push();
-        translate(j, i, 0.5);
-        box(1, 1, 1);
+        translate(j, i, 1); // 0.5);
+        box(1, 1, maze_height);
         pop();
       }
     }
