@@ -173,36 +173,50 @@ function handleKeyDown() {
 
   if (keyIsDown(UP_ARROW)) {
     // W: go forward
+    human.direction = 'forward';
+
+    /*
     Z -= 10;
     Y = cos(Z / 50) * 60 - 100 - 200;  // walk effect
     centerX = 0;
     centerY = -100;
     centerZ = 0;
+     */
   } else if (keyIsDown(DOWN_ARROW)) {
     // S: go backward
+    human.direction = 'backward';
+    /*
     Z += 10;
     Y = cos(Z / 50) * 60 - 100 - 200;  // walk effect
     centerX = 0;
     centerY = -100;
     centerZ = 0;
+     */
   }
   if (keyIsDown(LEFT_ARROW)) {
     // A: turn your head to the left
+    human.direction = 'left'
+    /*
     X -= 20;
     centerX = 0;
     centerY = -100;
     centerZ = 0;
+     */
   } else if (keyIsDown(RIGHT_ARROW)) {
     // D: turn your head to the right
+    human.direction = 'right';
+    /*
     X += 20;
     centerX = 0;
     centerY = -100;
     centerZ = 0;
+     */
   }
 }
 
 function keyPressed() {
   if (keyCode === UP_ARROW || keyCode === DOWN_ARROW || keyCode === LEFT_ARROW || keyCode === RIGHT_ARROW) {
+    human.walk = true;
     /*if (!sounds.walk.isPlaying()) {
       sounds.walk.play();
     }*/
@@ -214,6 +228,8 @@ function keyPressed() {
 
 function keyReleased() {
   if (keyCode === UP_ARROW || keyCode === DOWN_ARROW || keyCode === LEFT_ARROW || keyCode === RIGHT_ARROW) {
+    human.rot = 0;
+    human.walk = false;
     /*if (sounds.walk.isPlaying()) {
       sounds.walk.stop();
     }*/

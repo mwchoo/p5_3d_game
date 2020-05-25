@@ -1,6 +1,8 @@
 class Human {  // Implemented by Minwoo Choo
   constructor() {
-    this.walk = true;
+    this.walk = false;
+    this.rot = 0;
+    this.direction = 'backward';
   }
 
   drawHead() {
@@ -50,10 +52,26 @@ class Human {  // Implemented by Minwoo Choo
     translate(0, 0.7, -0.8);
     rotateX(PI);
     texture(textures.human.arm);
-    box(0.5, 0.5, 1.5);
 
-    translate(0, 1.4, 0);
+    push();
+    if (this.walk) {
+      translate(0, 0, -0.7);
+      rotateY(sin(rot + PI));
+      translate(0, 0, 0.7);
+    }
     box(0.5, 0.5, 1.5);
+    pop();
+
+    push();
+    translate(0, 1.4, 0);
+    if (this.walk) {
+      translate(0, 0, -0.7);
+      rotateY(sin(rot));
+      translate(0, 0, 0.7);
+    }
+    box(0.5, 0.5, 1.5);
+    pop();
+
     pop();
   }
 
@@ -61,14 +79,29 @@ class Human {  // Implemented by Minwoo Choo
     push();
     translate(0, 0.2, -2.2);
     rotateX(PI);
-    if (this.walk) {
-      rotateY(mouseX/100);
-    }
     texture(textures.human.leg);
-    box(0.4, 0.5, 1.5);
 
-    translate(0, 0.5, 0);
+    push();
+    if (this.walk) {
+      translate(0, 0, -0.7);
+      rotateY(sin(rot));
+      translate(0, 0, 0.7);
+      rot += 0.1;
+    }
     box(0.4, 0.5, 1.5);
+    pop();
+
+    push();
+    translate(0, 0.5, 0);
+    if (this.walk) {
+      translate(0, 0, -0.7);
+      rotateY(sin(rot + PI));
+      translate(0, 0, 0.7);
+      rot += 0.1;
+    }
+    box(0.4, 0.5, 1.5);
+    pop();
+
     pop();
   }
 
@@ -76,6 +109,15 @@ class Human {  // Implemented by Minwoo Choo
     push();
     noStroke();
     translate(0, 0, 10);
+
+    if (this.direction === 'forward') {
+      rotateZ(PI);
+    } else if (this.direction === 'backward') {
+    } else if (this.direction === 'left') {
+      rotateZ(HALF_PI);
+    } else if (this.direction === 'right') {
+      rotateZ(-HALF_PI);
+    }
 
     this.drawHead();
     this.drawBody();
