@@ -66,6 +66,7 @@ function setup() {
 
   generateMaze();
   console.log(maze);
+  DFS();
   //sounds.bgm.play();
   /*
   createDiv("<div class='info-wrapper'>" +
@@ -106,6 +107,7 @@ function draw() {
   camera(X, Y, Z, centerX, centerY, centerZ, 0, 1, 0);
 
   drawMaze();
+  drawDFSRoute();
 
   /*
   if (!sounds.bgm.isPlaying()) {

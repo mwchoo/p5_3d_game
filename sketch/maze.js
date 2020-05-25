@@ -193,12 +193,166 @@ Navigate a route using DFS / BFS algorithm
  */
 let stack = [];  // x, y
 let queue = [];  // x, y, from_x, from_y
-let visited_dfs = [];
-let visited_bfs = [];
+let visited_dfs = []; //Array.from(Array(HEIGHT), () => Array());
+let visited_bfs = []; //Array.from(Array(HEIGHT), () => Array());
 let DFSflag = false;
 let BFSflag = false;
+let stacknum = 0;
 
-// ToDo. Insert DFS / BFS function here
+// DFS (Iterative)
+function DFS() {
+  if (DFSflag) {
+    DFSflag = true;
+    return;
+  }
+
+  let x = 1;
+  let y = 1;
+  let i, j;
+
+  for (i = 0; i < HEIGHT; i++) {
+    for (j = 0; j < WIDTH; j++) {
+      visited_dfs[i] = false;
+    }
+  }
+
+  visited_dfs[y][x] = true;
+  stacknum = 0;
+  stack[stacknum] = {x: x, y: y};
+  stacknum++;
+
+  while (true) {
+    console.log("@@@");
+    let block = 0;
+
+    if (y === HEIGHT * 2 + 2 && x === WIDTH * 2 - 1) {
+      stack[stacknum] = {x: x, y: y};
+      stacknum++;
+      visited_dfs[y][x] = true;
+      break;
+    }
+
+    if (y < HEIGHT * 2 + 2) {
+      if (visited_dfs[y + 1][x] === false && maze[y + 1][x] === ' ') {
+        stack[stacknum] = {x: x, y: y};
+        stacknum++;
+        visited_dfs[y + 1][x] = true;
+        y++;
+        block = 1;
+        continue;
+      }
+    }
+
+    if (x < WIDTH * 2) {
+      if (visited_dfs[y][x + 1] === false && maze[y][x + 1] === ' ') {
+        stack[stacknum] = {x: x, y: y};
+        stacknum++;
+        visited_dfs[y][x + 1] = true;
+        x++;
+        block = 1;
+        continue;
+      }
+    }
+
+    if (y > 1) {
+      if (visited_dfs[y - 1][x] === false && maze[y - 1][x] === ' ') {
+        stack[stacknum] = {x: x, y: y};
+        stacknum++;
+        visited_dfs[y - 1][x] = true;
+        y--;
+        block = 1;
+        continue;
+      }
+    }
+
+    if (x > 1) {
+      if (visited_dfs[y][x - 1] === false && maze[y][x - 1] === ' ') {
+        stack[stacknum] = {x: x, y: y};
+        stacknum++;
+        visited_dfs[y][x - 1] = true;
+        x--;
+        block = 1;
+        continue;
+      }
+    }
+
+    if (block === 0) {
+      stacknum--;
+      console.log(stacknum);
+      console.log(stack);
+      x = stack[stacknum].x;
+      y = stack[stacknum].y;
+    }
+  }
+  DFSflag = true;
+}
+
+// BFS (Iterative)
+function BFS() {
+  if (BFSflag) {
+    BFSflag = true;
+    return;
+  }
+
+  let i = 0;
+  let j = 0;
+  let x = 1;
+  let y = 1;
+
+  for (i = 0; i < HEIGHT * 2 + 3; i++) {
+    for (j = 0; j < WIDTH * 2 + 1; j++) {
+      visited_bfs[i][j] = false;
+    }
+  }
+
+  visited_bfs[1][1] = true;
+  queue.push({x: x, y: y, from_x: x, from_y: y});
+
+  while (true) {
+    const front = queue.unshift();
+    y = front.y;
+    x = front.x;
+
+    if (y === HEIGHT * 2 + 2 && x === WIDTH * 2 - 1) {
+      queue.push({x: x, y: y, from_x: x, from_y: y});
+      visited_bfs[y][x] = true;
+      break;
+    }
+
+    if (y < rows - 1) {
+      if (visited_bfs[y + 1][x] === false && maze[y + 1][x] === ' ') {
+        queue.push({x: x, y: y + 1, from_x: x, from_y: y});
+        visited_bfs[y + 1][x] = true;
+        visited_bfs[y][x] = true;
+      }
+    }
+
+    if (x < cols - 1) {
+      if (visited_bfs[y][x + 1] === false && maze[y][x + 1] === ' ') {
+        queue.push({x: x + 1, y: y, from_x: x, from_y: y});
+        visited_bfs[y][x + 1] = true;
+        visited_bfs[y][x] = true;
+      }
+    }
+
+    if (y > 1) {
+      if (visited_bfs[y - 1][x] === false && maze[y - 1][x] === ' ') {
+        queue.push({x: x, y: y - 1, from_x: x, from_y: y});
+        visited_bfs[y - 1][x] = true;
+        visited_bfs[y][x] = true;
+      }
+    }
+
+    if (x > 1) {
+      if (visited_bfs[y][x - 1] === false && maze[y][x - 1] === ' ') {
+        queue.push({x: x - 1, y: y, from_x: x, from_y: y});
+        visited_bfs[y][x - 1] = true;
+        visited_bfs[y][x] = true;
+      }
+    }
+  }
+  BFSflag = true;
+}
 
 function drawMaze() {
   push();
@@ -218,7 +372,13 @@ function drawMaze() {
   plane(30, 30); // draw ground
   pop();
 
-  /* draw walls */
+  drawWalls();
+  drawDFSRoute();
+
+  pop();
+}
+
+function drawWalls() {
   push();
   noStroke();
   texture(textures.maze);
@@ -246,7 +406,7 @@ function drawMaze() {
         translate(j, i, 0.5);
         box(1, 2, 1);
         pop();
-        line(j, i - 1, j ,i + 1);
+        line(j, i - 1, j, i + 1);
       } else if (maze[i - 1][j - 1] === '+') {
         push();
         translate(j, i, 0.5);
@@ -256,6 +416,40 @@ function drawMaze() {
     }
   }
   pop();
+}
 
+function drawDFSRoute() {
+  let i;
+  let j;
+  push();
+  translate(-11, -11, 0);
+  if (DFSflag) {  // ToDo. Add mode
+    for (i = 2; i < HEIGHT * 2 + 3; i++) {
+      for (j = 2; j < WIDTH * 2 + 1; j++) {
+        if (visited_dfs[i][j - 1] && visited_dfs[i - 1][j - 1]) {
+          stroke(150, 150, 150);
+          line(j, i, j, i + 1);
+          console.log("!!");
+        }
+        if (visited_dfs[i - 1][j] && visited_dfs[i - 1][j - 1]) {
+          stroke(150, 150, 150);
+          line(j, i, j + 1, i);
+          console.log("@@");
+        }
+      }
+    }
+
+    for (j = 2; j < WIDTH * 2 + 1; j++) {
+      stroke(150, 150, 150);
+      line(j, HEIGHT * 2 + 3, j + 1, HEIGHT * 2 + 3);
+      console.log("##");
+    }
+
+    for (i = 0; i < stack.length - 1; i++) {
+      stroke(30, 30, 30);
+      line(stack[i].x + 1, stack[i].y + 1, stack[i + 1].x + 1, stack[i + 1].y + 1);
+      console.log("$$");
+    }
+  }
   pop();
 }
