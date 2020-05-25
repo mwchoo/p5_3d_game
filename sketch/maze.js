@@ -15,7 +15,7 @@ let vWall = [];
 let cell = [];
 let set_id = 0;
 let maze = [];
-let maze_height = 2;
+let maze_height = 3;
 
 function generateMaze() {
   let prevWall = -1;
@@ -359,7 +359,7 @@ function BFS() {
 
 function drawMaze() {
   push();
-  scale(15);
+  //scale(15);
   rotateY(-HALF_PI);
 
   //lights();
@@ -368,17 +368,30 @@ function drawMaze() {
   //fill(0.1);
 
   push();
+  scale(15);
   noStroke();
   specularMaterial(50, 50, 50);
   shininess(20);
   texture(textures.grass);
-  ellipse(0, 0, 100, 100);
-  sphere(50);
+  ellipse(0, 0, 100, 100); // draw ground
+  push();
+  specularMaterial(50, 50, 50);
+  shininess(20);
+  rotateX(-HALF_PI);
+  rotateY(HALF_PI);
+  texture(textures.sky);
+  sphere(50); // draw sky
+  pop();
   //plane(30, 30); // draw ground
   pop();
 
+  push();
+  scale(35);
+  translate(-5, 0, 0);
   drawWalls();
   drawDFSRoute();
+  human.display();
+  pop();
 
   pop();
 }
