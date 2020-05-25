@@ -10,6 +10,10 @@ class Human {  // Implemented by Minwoo Choo
       y: 0,
       z: 0
     }
+    this.mazepos = {
+      x: WIDTH * 2 - 1,
+      y: HEIGHT * 2 + 1
+    }
   }
 
   drawHead() {
@@ -168,8 +172,49 @@ function walkToEntrance() {
       human.direction = 'forward';
       human.pos.x -= 0.2;
     } else {
+      human.pos.x = 18;
+      human.pos.y = 22;
       human.walk = false;
       scene = 2;
     }
+  }
+}
+
+// forward: -x, backward: x, left: y, right: -y
+// default pos is (21, 1)
+function handleHumanPos(op) {
+  if (!gameStart) return;
+  const {pos, mazepos} = human;
+
+  if (op === UP_ARROW) {
+    if (maze[mazepos.y][mazepos.x - 1] === ' ') {
+      pos.x -= 4;
+      mazepos.x -= 2;
+    }
+  } else if (op === DOWN_ARROW) {
+    if (maze[mazepos.y][mazepos.x + 1] === ' ') {
+      pos.x += 4;
+      mazepos.x += 2;
+    }
+  } else if (op === LEFT_ARROW) {
+    if (maze[mazepos.y + 1][mazepos.x] === ' ') {
+      pos.y += 4;
+      mazepos.y += 2;
+    }
+  } else if (op === RIGHT_ARROW) {
+    if (maze[mazepos.y - 1][mazepos.x] === ' ') {
+      pos.y -= 4;
+      mazepos.y -= 2;
+    }
+  }
+  console.log(mazepos.x, mazepos.y, pos.x, pos.y);
+  console.log(maze[mazepos.y][mazepos.x]);
+  console.log(maze[mazepos.y]);
+
+  if (Math.ceil(mazepos.x) === 1 && Math.ceil(mazepos.y) === 1) {
+    // game clear!
+    console.log('congrat!!!');
+    gameStart = false;
+    isCleared = true;
   }
 }

@@ -172,7 +172,6 @@ function handleKeyDown() {
   if (keyIsDown(UP_ARROW)) {
     // W: go forward
     human.direction = 'forward';
-
     /*
     Z -= 10;
     Y = cos(Z / 50) * 60 - 100 - 200;  // walk effect
@@ -215,6 +214,7 @@ function handleKeyDown() {
 function keyPressed() {
   if (gameStart && keyCode === UP_ARROW || keyCode === DOWN_ARROW || keyCode === LEFT_ARROW || keyCode === RIGHT_ARROW) {
     human.walk = true;
+    handleHumanPos(keyCode);
     /*if (!sounds.walk.isPlaying()) {
       sounds.walk.play();
     }*/
