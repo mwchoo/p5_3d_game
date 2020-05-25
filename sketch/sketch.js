@@ -8,8 +8,7 @@ ARROW_DOWN Key: go backward
 ARROW_LEFT Key: go left
 ARROW_RIGHT Key: go right
 
-Mouse Click: switch pov mode
-Mouse Move: cam angle
+Mouse Click: switch pov mode (DELETED)
 
 P Key: screen shot
 */
@@ -17,7 +16,8 @@ P Key: screen shot
 let scene = 0;
 let pov_mode = 0;
 let sounds = {
-  bgm: undefined
+  bgm: undefined,
+  walk: undefined
 }
 let textures = {
   grass: undefined,
@@ -57,6 +57,7 @@ document.onselectstart = function () {
 
 function preload() {
   sounds.bgm = loadSound('assets/bgm.mp3');
+  sounds.walk = loadSound('assets/walk.mp3');
   textures.grass = loadImage('assets/grass_texture.jpg');
   textures.maze = loadImage('assets/leaves_texture.jpg');
   textures.sky = loadImage('assets/sky_texture.jpg');
@@ -68,6 +69,8 @@ function preload() {
 }
 
 function setup() {
+  const blinder = document.getElementById('blinder');
+  const game_info = document.getElementById('game-info');
   createCanvas(windowWidth, windowHeight, WEBGL);
   colorMode(RGB, 255, 255, 255, 1);
   /*
@@ -86,7 +89,9 @@ function setup() {
   //DFS();
 
   human = new Human();
-  //sounds.bgm.play();
+  sounds.bgm.play();
+  blinder.style.opacity = '0';
+  game_info.innerText = '';
   /*
   createDiv("<div class='info-wrapper'>" +
     "<h2 id='pov-info'>Default POV (CAM 0)</h2>" +
@@ -94,10 +99,12 @@ function setup() {
     "<h3 id='cam-pos'>CAM POS: (0, 0, 0), (0, 0, 0)</h3>" +
     "</div>"
   );
+  */
+  /*
   createDiv("<div class='keymap-wrapper'>" +
     "<img src='assets/keymap.png'>" +
     "</div>");
-   */
+    */
 }
 
 function draw() {
@@ -131,12 +138,10 @@ function draw() {
 
   drawMaze();
 
-  /*
   if (!sounds.bgm.isPlaying()) {
     getAudioContext().resume();
     sounds.bgm.play();
   }
-   */
 
   //handleDisplay();
   handleKeyDown();
@@ -156,10 +161,10 @@ function handlePov() {
 
 function handleDisplay() {
   const pov_info = document.getElementById('pov-info');
-  const human_pos = document.getElementById('drone-pos');
+  const human_pos = document.getElementById('human-pos');
   const cam_pos = document.getElementById('cam-pos');
   const {x, y, z} = human.pos;
-  pov_info.innerText = pov_mode === 0 ? 'Default POV (CAM 0)' : 'Drone POV (CAM 1)';
+  pov_info.innerText = pov_mode === 0 ? 'Default POV (CAM 0)' : 'Human POV (CAM 1)';
   human_pos.innerText = 'Human Pos: (' + parseInt(x) + ', ' + parseInt(y) + ', ' + parseInt(z) + ')';
   cam_pos.innerText = 'CAM POS: (' + parseInt(X) + ', ' + parseInt(Y) + ', ' + parseInt(Z) + ')'
     + ' (' + parseInt(centerX) + ', ' + parseInt(centerY) + ', ' + parseInt(centerZ) + ')';
@@ -215,9 +220,9 @@ function keyPressed() {
   if (gameStart && keyCode === UP_ARROW || keyCode === DOWN_ARROW || keyCode === LEFT_ARROW || keyCode === RIGHT_ARROW) {
     human.walk = true;
     handleHumanPos(keyCode);
-    /*if (!sounds.walk.isPlaying()) {
+    if (!sounds.walk.isPlaying()) {
       sounds.walk.play();
-    }*/
+    }
   }
   if (keyCode === 80) {
     saveImage();

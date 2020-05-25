@@ -150,7 +150,7 @@ function dropTheHuman() {
   if (!humanDropped) {
     // initialize drop position
     human.pos.x = 24;
-    human.pos.z = 25;
+    human.pos.z = 28;
     human.walk = true;
     human.direction = 'backward';
     humanDropped = true;
@@ -213,8 +213,11 @@ function handleHumanPos(op) {
 
   if (Math.ceil(mazepos.x) === 1 && Math.ceil(mazepos.y) === 1) {
     // game clear!
-    console.log('congrat!!!');
+    const blinder = document.getElementById('blinder');
+    const game_info = document.getElementById('game-info');
     gameStart = false;
     isCleared = true;
+    blinder.style.opacity = '0.5';
+    game_info.innerText = 'You Win!';
   }
 }

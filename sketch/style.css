@@ -31,3 +31,21 @@ body {
 .keymap-wrapper img {
     width: 300px;
 }
+
+#blinder {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: black;
+    opacity: 0.5;
+}
+
+#game-info {
+    position: absolute;
+    color: white;
+    font-size: 100px;
+    margin: 0 auto;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+}

@@ -473,7 +473,7 @@ function drawDFSRoute() {
 
 function closeEntrance() {
   if (entrance_height < maze_height) {
-    entrance_height += 0.1;
+    entrance_height += 0.05;
   } else {
     scene = 3;
     gameStart = true;
