@@ -38,7 +38,7 @@ let rot = 0;
 
 let X = -160;  // 0;
 let Y = -600;  // 0;
-let Z = 520;  //1700;
+let Z = 500;  //1700;
 let centerX = 0;
 let centerY = -100;
 let centerZ = 0;
